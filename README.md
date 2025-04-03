@@ -1,2 +1,2 @@
-# 4In_a_Row
+# 4 In a row
 Group project for University...
