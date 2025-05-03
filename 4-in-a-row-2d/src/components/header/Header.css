@@ -1,0 +1,93 @@
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.info-container,
+.sound-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 70px;
+}
+
+.info-container {
+  justify-content: flex-start;
+}
+
+.sound-container {
+  justify-content: flex-end;
+}
+
+.title-container {
+  position: relative;
+  text-align: center;
+  flex: 2;
+}
+
+.title-container .title,
+.title-container .subtitle {
+  font-family: "Anton", sans-serif;
+  font-weight: bold;
+}
+
+.title-container .title {
+  font-size: 6vw;
+  color: #ffeb3b;
+  position: relative;
+  background: linear-gradient(to top, #fff176, #fdd835);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 1px 1px 0 #fbc02d, 2px 2px 0 #f9a825, 3px 3px 0 #f57f17, 4px 4px 0 #e65100, 5px 5px 0 #bf360c,
+    6px 6px 0 #8d2a00, 7px 7px 0 #5d1c00;
+}
+
+.title-container .subtitle {
+  font-size: 3vw;
+  color: #bd4a18;
+  position: relative;
+  background: linear-gradient(to top, #d04d15, #ca4911);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btn-info,
+.btn-sound {
+  position: relative;
+  cursor: pointer;
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  background-color: #fbc02c;
+  padding: 20px;
+  border-radius: 8px;
+  color: #470b40;
+  border: 3px solid #470b40;
+  box-shadow: 0 2px 10px 1px #ffe197;
+  transition: transform 0.3s ease;
+}
+
+.btn-sound {
+  background-image: url(../../assets/low-volume.png);
+  background-size: 24px;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 28px;
+}
+
+.btn-info::before,
+.btn-sound::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 10px;
+  width: 4px;
+  height: 4px;
+  background: white;
+  box-shadow: 3px 3px #d4f4ff;
+}

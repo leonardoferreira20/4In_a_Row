@@ -1,0 +1,105 @@
+.start-game-container {
+  position: absolute;
+  bottom: -85px;
+  text-align: center;
+}
+
+.btn-start-game,
+.btn-play-player,
+.btn-play-computer {
+  position: relative;
+  color: #470b40;
+  background-color: #fbc02d;
+  border: 3px solid #470b40;
+  border-radius: 8px;
+  padding: 25px 60px;
+  text-shadow: 1px 1px 0 #fff;
+  outline: none;
+  overflow: hidden;
+
+  box-shadow: 0 2px 10px 1px #ffe197;
+
+  margin: 10px;
+  background-repeat: no-repeat;
+  background-position: 30px center;
+  cursor: pointer;
+  transition-duration: 0.3s;
+}
+
+.btn-start-game {
+  background-image: url(../../assets/play.png);
+}
+
+.btn-play-player {
+  background-image: url(../../assets/team.png);
+}
+
+.btn-play-computer {
+  background-image: url(../../assets/alien-pixelated-shape-of-a-digital-game.png);
+  background-size: 26px;
+}
+
+.btn-start-game span,
+.btn-play-player span,
+.btn-play-computer span {
+  position: relative;
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  margin-left: 10px;
+  line-height: 1.3;
+}
+
+.btn-start-game::before,
+.btn-play-computer::before,
+.btn-play-player::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 10px;
+  width: 6px;
+  height: 6px;
+  background: white;
+  box-shadow: 5px 5px #d4f4ff;
+}
+
+.btn-start-game:hover,
+.btn-play-player:hover,
+.btn-play-computer:hover {
+  transition-duration: 0.3s;
+  transform: scale(1.1);
+}
+
+.btn-start-game span::before,
+.btn-play-player span::before,
+.btn-play-computer span::before {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: -2px;
+  background-color: white;
+  border-radius: 8px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.btn-start-game span::before {
+  width: 85px;
+  height: 4px;
+}
+.btn-play-player span::before {
+  width: 165px;
+  height: 4px;
+}
+.btn-play-computer span::before {
+  width: 210px;
+  height: 4px;
+}
+
+.btn-start-game:hover span::before,
+.btn-play-player:hover span::before,
+.btn-play-computer:hover span::before {
+  transform: scaleX(1);
+}

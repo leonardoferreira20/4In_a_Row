@@ -1,0 +1,88 @@
+.player-settings-container {
+  padding: 0 20px;
+}
+
+.player-settings-name-container {
+  margin-top: 25px;
+  display: block;
+}
+
+.player-settings-name-input {
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-size: 14px;
+  width: 93%;
+  padding: 5px 10px;
+  background-color: transparent;
+  color: #470b40;
+  border: none;
+  border-bottom: 3px solid #470b40;
+  border-radius: 4px;
+  outline: none;
+  margin-top: 10px;
+}
+
+.player-settings-color-container {
+  margin-top: 25px;
+}
+
+.player-settings-colors-content {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.player-settings-color-label,
+.player-settings-name-label {
+  font-family: "Press Start 2P", system-ui;
+  font-size: 10px;
+  font-weight: 400;
+  font-style: normal;
+  color: #470b40;
+}
+
+.player-settings-btn-color {
+  position: relative;
+  cursor: pointer;
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  color: #470b40;
+  border: 3px solid #470b40;
+  transition: transform 0.3s ease;
+}
+
+.player-settings-btn-color:hover {
+  transform: scale(1.07);
+}
+
+.player-settings-btn-color::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 5px;
+  width: 4px;
+  height: 4px;
+  background: white;
+  box-shadow: 3px 3px #d4f4ff;
+}
+
+.player-settings-btn-color.red {
+  background-color: #bf360c;
+}
+
+.player-settings-btn-color.yellow {
+  background-color: #ebc315;
+}
+
+.player-settings-btn-color.green {
+  background-color: #81d62c;
+}
+
+.player-settings-btn-color.purple {
+  background-color: #5a2454;
+}

@@ -1,0 +1,40 @@
+.player-close-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.player-close-nav-container,
+.player-close-btn-container {
+  display: flex;
+}
+
+.player-close-nav-container {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.player-close-btn-container {
+  justify-content: flex-end;
+}
+
+.player-close-nav-title {
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-size: 12px;
+  color: #470b40;
+}
+
+.player-close-btn {
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-size: 14px;
+  color: #470b40;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  transition: transform 0.3s ease;
+}
+.player-close-btn:hover {
+  transform: scale(1.07);
+}

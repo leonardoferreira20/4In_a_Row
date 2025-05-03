@@ -1,0 +1,63 @@
+.player-container {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  top: 40px;
+}
+
+.player-content {
+  width: 350px;
+  height: 290px;
+  background-color: #fbc02d;
+  border-radius: 10px;
+  border: 3px solid #470b40;
+  padding: 15px;
+}
+
+.player-confirm-settings-container {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.player-confirm-settings-btn {
+  position: relative;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 8px;
+  background-color: #fbc02d;
+  padding: 10px 20px;
+  border: 3px solid #470b40;
+  transition-duration: 0.3s;
+  cursor: pointer;
+}
+
+.player-confirm-settings-btn::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 4px;
+  width: 4px;
+  height: 4px;
+  background: white;
+  box-shadow: 3px 3px #d4f4ff;
+}
+
+.player-confirm-settings-btn span {
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  color: #470b40;
+  position: relative;
+  transition-duration: 0.3s;
+}
+
+.player-confirm-settings-btn:hover {
+  background-color: #470b40;
+  color: #fbc02d;
+  transform: scale(1.07);
+  transition-duration: 0.3s;
+}
+
+.player-confirm-settings-btn:hover span {
+  color: #fbc02d;
+}
