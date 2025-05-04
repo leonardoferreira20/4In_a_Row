@@ -81,13 +81,13 @@ const GamePanel = () => {
   const [gameMode, setGameMode] = useState(null);
   const updateGameMode = (selectedGameMode) => {
     setGameMode(selectedGameMode);
-    updateNumberOfPlayers();
+    updateNumberOfPlayers(selectedGameMode);
   };
 
   // Atualizar o numero de jogadores
   const [numberOfPlayers, setNumberOfPlayers] = useState(0);
-  const updateNumberOfPlayers = () => {
-    setNumberOfPlayers(gameMode == "player" ? 2 : 1);
+  const updateNumberOfPlayers = (mode) => {
+    setNumberOfPlayers(mode == "player" ? 2 : 1);
   };
 
   const [players, setPlayers] = useState([]);
@@ -158,7 +158,10 @@ const GamePanel = () => {
         </div>
 
         {/* JOGADOR 2 */}
-        <div className="player-container" style={{ display: isPlayer2Visible ? "flex" : "none" }}>
+        <div
+          className="player-container"
+          style={{ display: isPlayer2Visible && numberOfPlayers == 2 ? "flex" : "none" }}
+        >
           <Player
             playerNumber="2"
             isVisible={isStartGameVisible}
