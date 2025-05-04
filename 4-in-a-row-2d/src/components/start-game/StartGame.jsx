@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./StartGame.css";
 
 const StartGame = (props) => {
-  const { isVisible, updateControlsVisibility, clearBoardGame } = props;
+  const { isVisible, updateControlsVisibility, clearBoardGame, gameMode } = props;
 
   const [isPlayOptionsVisible, setIsPlayOptionsVisible] = useState(false);
 
@@ -10,7 +10,8 @@ const StartGame = (props) => {
     setIsPlayOptionsVisible(true);
   };
 
-  const handlerPlayOptionSelected = () => {
+  const handlerPlayOptionSelected = (event) => {
+    gameMode(event.currentTarget.value);
     updateControlsVisibility();
     clearBoardGame();
   };
@@ -22,11 +23,11 @@ const StartGame = (props) => {
       </button>
 
       <div style={{ display: isPlayOptionsVisible ? "block" : "none" }}>
-        <button className="btn-play-player" onClick={handlerPlayOptionSelected}>
+        <button className="btn-play-player" value="player" onClick={handlerPlayOptionSelected}>
           <span>vs Jogador</span>
         </button>
 
-        <button className="btn-play-computer">
+        <button className="btn-play-computer" value="computer" onClick={handlerPlayOptionSelected}>
           <span>vs Computador</span>
         </button>
       </div>

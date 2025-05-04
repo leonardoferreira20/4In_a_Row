@@ -44,3 +44,9 @@
   bottom: -28px;
   transform: skewY(65deg);
 }
+
+.player-container {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+}

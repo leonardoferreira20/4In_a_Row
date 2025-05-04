@@ -1,7 +1,4 @@
 .player-container {
-  position: absolute;
-  display: flex;
-  justify-content: center;
   top: 40px;
 }
 

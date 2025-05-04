@@ -1,21 +1,55 @@
 import React from "react";
 import "./PlayerConfigurations.css";
 
-const PlayerConfigurations = () => {
+const PlayerConfigurations = (props) => {
+  const { playerNumber, updatePlayerName, updateTokenColor, unavailableColors } = props;
+
+  const handlerChooseTokenColor = (event) => {
+    const buttons = document.querySelectorAll(".player-settings-btn-color");
+
+    buttons.forEach((btn) => btn.classList.remove("selected"));
+    event.currentTarget.classList.add("selected");
+
+    updateTokenColor(event);
+  };
+
+  const handlerIsColorDisabled = (color) => {
+    return unavailableColors.includes(color.value);
+  };
+  const colors = [
+    { name: "yellow", value: "#ebc315" },
+    { name: "red", value: "#bf360c" },
+    { name: "green", value: "#81d62c" },
+    { name: "purple", value: "#5a2454" },
+  ];
   return (
     <>
       <div className="player-settings-name-container">
-        <label className="player-settings-name-label">Introduza o nome do Jogador 1:</label>
-        <input name="name" className="player-settings-name-input" type="text" placeholder="Jogador 1..." required />
+        <label className="player-settings-name-label">Introduza o nome do Jogador {playerNumber}:</label>
+        <input
+          name="name"
+          className="player-settings-name-input"
+          type="text"
+          placeholder={"Jogador " + playerNumber + "..."}
+          required
+          onKeyUp={updatePlayerName}
+        />
       </div>
       <div className="player-settings-color-container">
         <label className="player-settings-color-label">Escolha a cor das suas peças:</label>
         <div className="player-settings-colors-content">
-          <button className="player-settings-btn-color yellow"></button>
-          <button className="player-settings-btn-color red"></button>
-          <button className="player-settings-btn-color green"></button>
-          <button className="player-settings-btn-color purple"></button>
-          <button className="player-settings-btn-color random">?</button>
+          {colors.map((color) => (
+            <button
+              key={color.name}
+              className={`player-settings-btn-color ${color.name}`}
+              value={color.value}
+              onClick={handlerChooseTokenColor}
+              disabled={handlerIsColorDisabled(color)}
+            />
+          ))}
+          <button className="player-settings-btn-color random" value="random" onClick={handlerChooseTokenColor}>
+            ?
+          </button>
         </div>
       </div>
     </>

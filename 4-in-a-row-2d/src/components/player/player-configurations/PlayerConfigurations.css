@@ -54,10 +54,12 @@
   color: #470b40;
   border: 3px solid #470b40;
   transition: transform 0.3s ease;
+  transition-duration: 0.3s;
 }
 
 .player-settings-btn-color:hover {
-  transform: scale(1.07);
+  transform: scale(1.1);
+  border-color: #2655d7;
 }
 
 .player-settings-btn-color::before {
@@ -85,4 +87,15 @@
 
 .player-settings-btn-color.purple {
   background-color: #5a2454;
+}
+
+.player-settings-btn-color.selected {
+  border-color: #2655d7;
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+.player-settings-btn-color:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
 }
