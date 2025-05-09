@@ -1,5 +1,17 @@
 .game-panel-container {
   position: relative;
+}
+
+.game-panel-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.game-panel-player1-dashboard-container,
+.game-panel-player2-dashboard-container {
+  flex: 1;
   display: flex;
   justify-content: center;
 }

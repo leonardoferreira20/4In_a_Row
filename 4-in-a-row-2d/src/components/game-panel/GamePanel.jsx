@@ -3,6 +3,7 @@ import "./GamePanel.css";
 import Hole from "../hole/Hole";
 import StartGame from "../start-game/StartGame";
 import Player from "../player/Player";
+import PlayerDashboard from "../player/player-dashboard/PlayerDashboard";
 
 const GamePanel = () => {
   // <!-IA - Feito pelo CHATGPT
@@ -51,12 +52,18 @@ const GamePanel = () => {
 
     return grid;
   };
-
-  const [grid, setGrid] = useState(() => generateGrid());
   // ->
 
+  const [grid, setGrid] = useState(() => generateGrid());
+  const [isStartGameVisible, setIsStartGameVisible] = useState(true); // Para esconder as opções de jogo (vs jogador | vs computador)
+  const [gameMode, setGameMode] = useState(null); // Selecionar o modo de jogo
+  const [numberOfPlayers, setNumberOfPlayers] = useState(0); // Atualizar o numero de jogadores
+  const [players, setPlayers] = useState([]);
+  const [isPlayer1Visible, setIsPlayer1Visible] = useState(true);
+  const [isPlayer2Visible, setIsPlayer2Visible] = useState(false);
+
   // Eliminar todas as peças da grelha para começar um jogo
-  const clearAllCells = () => {
+  const handlerClearAllCells = () => {
     setGrid((prevGrid) =>
       prevGrid.map((cell) => ({
         ...cell,
@@ -67,30 +74,19 @@ const GamePanel = () => {
   };
 
   // Atualizar o tabuleiro de jogo
-  const updateGameBoard = () => {
+  const handlerUpdateGameBoard = () => {
     setGrid(() => generateGrid());
   };
 
-  // Para esconder as opções de jogo (vs jogador | vs computador)
-  const [isStartGameVisible, setIsStartGameVisible] = useState(true);
-  const updateStartGameVisibility = () => {
-    setIsStartGameVisible(!isStartGameVisible);
-  };
+  const handlerUpdateStartGameVisibility = () => setIsStartGameVisible(!isStartGameVisible);
 
-  // Selecionar o modo de jogo
-  const [gameMode, setGameMode] = useState(null);
-  const updateGameMode = (selectedGameMode) => {
+  const handlerUpdateGameMode = (selectedGameMode) => {
     setGameMode(selectedGameMode);
-    updateNumberOfPlayers(selectedGameMode);
+    handlerUpdateNumberOfPlayers(selectedGameMode);
   };
 
-  // Atualizar o numero de jogadores
-  const [numberOfPlayers, setNumberOfPlayers] = useState(0);
-  const updateNumberOfPlayers = (mode) => {
-    setNumberOfPlayers(mode == "player" ? 2 : 1);
-  };
+  const handlerUpdateNumberOfPlayers = (mode) => setNumberOfPlayers(mode == "player" ? 2 : 1);
 
-  const [players, setPlayers] = useState([]);
   const handlePlayerCreated = (player, index) => {
     setPlayers((prev) => {
       const updated = [...prev];
@@ -99,12 +95,8 @@ const GamePanel = () => {
     });
   };
 
-  const [isPlayer1Visible, setIsPlayer1Visible] = useState(true);
-  const handlerCheckPlayer1Visibility = () => {
-    setIsPlayer1Visible(false);
-  };
+  const handlerCheckPlayer1Visibility = () => setIsPlayer1Visible(false);
 
-  const [isPlayer2Visible, setIsPlayer2Visible] = useState(false);
   const handlerCheckPlayer2Visibility = () => {
     handlerCheckPlayer1Visibility(!isPlayer1Visible);
     setIsPlayer2Visible(!isPlayer2Visible);
@@ -119,63 +111,83 @@ const GamePanel = () => {
 
   return (
     <div className="game-panel-container">
-      <div className="game-panel-board">
-        {grid.map((cell, index) => (
-          <Hole
-            key={index}
-            positionTop={cell.positionTop}
-            positionLeft={cell.positionLeft}
-            isSelected={cell.isSelected}
-            backgroundColor={cell.backgroundColor}
-          />
-        ))}
+      <div>
+        <div className="game-panel-content">
+          {/* Jogador 1 */}
+          <div className="game-panel-player1-dashboard-container">
+            <div style={{ visibility: players[0] ? "visible" : "hidden" }}>
+              {players[0] && <PlayerDashboard playerInfo={players[0]} />}
+            </div>
+          </div>
 
-        <div className="game-panel-left-side-base"></div>
-        <div className="game-panel-base"></div>
-        <div className="game-panel-right-side-base"></div>
-      </div>
+          {/* Grelha de Jogo */}
+          <div style={{ flexShrink: 0 }}>
+            <div className="game-panel-board">
+              {grid.map((cell, index) => (
+                <Hole
+                  key={index}
+                  positionTop={cell.positionTop}
+                  positionLeft={cell.positionLeft}
+                  isSelected={cell.isSelected}
+                  backgroundColor={cell.backgroundColor}
+                />
+              ))}
+              <div className="game-panel-left-side-base"></div>
+              <div className="game-panel-base"></div>
+              <div className="game-panel-right-side-base"></div>
+            </div>
+          </div>
 
-      <StartGame
-        isVisible={isStartGameVisible}
-        updateControlsVisibility={updateStartGameVisibility}
-        clearBoardGame={clearAllCells}
-        gameMode={updateGameMode}
-      />
-
-      <div className="player-container">
-        {/* JOGADOR 1 */}
-        <div className="player-container" style={{ display: isPlayer1Visible ? "flex" : "none" }}>
-          <Player
-            playerNumber="1"
-            isVisible={isStartGameVisible}
-            updateControlsVisibility={updateStartGameVisibility}
-            updateGameGrid={updateGameBoard}
-            updatePlayer={(player) => handlePlayerCreated(player, 1)}
-            updatePlayerVisibility={handlerCheckPlayer2Visibility}
-            resetConfigurations={handlerResetConfigurations}
-            unavailableColors={[]}
-          />
+          {/* Jogador 2 */}
+          <div className="game-panel-player2-dashboard-container">
+            <div style={{ visibility: players[1] ? "visible" : "hidden" }}>
+              {players[1] && <PlayerDashboard playerInfo={players[1]} />}
+            </div>
+          </div>
         </div>
 
-        {/* JOGADOR 2 */}
-        <div
-          className="player-container"
-          style={{ display: isPlayer2Visible && numberOfPlayers == 2 ? "flex" : "none" }}
-        >
-          <Player
-            playerNumber="2"
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <StartGame
             isVisible={isStartGameVisible}
-            updateControlsVisibility={updateStartGameVisibility}
-            updateGameGrid={updateGameBoard}
-            updatePlayer={(player) => handlePlayerCreated(player, 2)}
-            updatePlayerVisibility={handlerCheckPlayer2Visibility}
-            resetConfigurations={handlerResetConfigurations}
-            unavailableColors={players[0]?.tokenColor ? [players[0].tokenColor] : []}
+            updateControlsVisibility={handlerUpdateStartGameVisibility}
+            clearBoardGame={handlerClearAllCells}
+            gameMode={handlerUpdateGameMode}
           />
+
+          <div className="player-container">
+            {/* JOGADOR 1 */}
+            <div className="player-container" style={{ display: isPlayer1Visible ? "flex" : "none" }}>
+              <Player
+                playerNumber="1"
+                isVisible={isStartGameVisible}
+                updateControlsVisibility={handlerUpdateStartGameVisibility}
+                updateGameGrid={handlerUpdateGameBoard}
+                updatePlayer={(player) => handlePlayerCreated(player, 1)}
+                updatePlayerVisibility={handlerCheckPlayer2Visibility}
+                resetConfigurations={handlerResetConfigurations}
+                unavailableColors={[]}
+              />
+            </div>
+
+            {/* JOGADOR 2 */}
+            <div
+              className="player-container"
+              style={{ display: isPlayer2Visible && numberOfPlayers == 2 ? "flex" : "none" }}
+            >
+              <Player
+                playerNumber="2"
+                isVisible={isStartGameVisible}
+                updateControlsVisibility={handlerUpdateStartGameVisibility}
+                updateGameGrid={handlerUpdateGameBoard}
+                updatePlayer={(player) => handlePlayerCreated(player, 2)}
+                updatePlayerVisibility={handlerCheckPlayer2Visibility}
+                resetConfigurations={handlerResetConfigurations}
+                unavailableColors={players[0]?.tokenColor ? [players[0].tokenColor] : []}
+              />
+            </div>
+          </div>
         </div>
       </div>
-
-      <div></div>
     </div>
   );
 };

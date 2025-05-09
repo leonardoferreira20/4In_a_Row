@@ -53,6 +53,7 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  transform: translateY(-66px);
 }
 
 .btn-info,
@@ -90,4 +91,9 @@
   height: 4px;
   background: white;
   box-shadow: 3px 3px #d4f4ff;
+}
+
+.btn-info:hover,
+.btn-sound:hover {
+  transform: scale(1.07);
 }

@@ -31,7 +31,6 @@ const PlayerConfigurations = (props) => {
           className="player-settings-name-input"
           type="text"
           placeholder={"Jogador " + playerNumber + "..."}
-          required
           onKeyUp={updatePlayerName}
         />
       </div>

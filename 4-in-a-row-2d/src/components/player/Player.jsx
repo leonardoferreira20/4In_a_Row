@@ -16,20 +16,22 @@ const Player = (props) => {
   } = props;
 
   const [playerName, setPlayerName] = useState(null);
-  const updatePlayerName = (event) => {
+  const [tokenColor, setTokenColor] = useState(null);
+
+  const handlerUpdatePlayerName = (event) => {
     const name = event.currentTarget.value;
     setPlayerName(name);
   };
 
-  const [tokenColor, setTokenColor] = useState(null);
-  const updateTokenColor = (event) => {
+  const handlerUpdateTokenColor = (event) => {
     const color = event.currentTarget.value;
     setTokenColor(color);
   };
 
   const handlerCreatePlayer = () => {
     const player = {
-      name: playerName,
+      id: playerNumber,
+      name: playerName ? playerName : `Jogador ${playerNumber}`,
       tokenColor: tokenColor,
     };
 
@@ -51,8 +53,8 @@ const Player = (props) => {
         <div className="player-settings-container">
           <PlayerConfigurations
             playerNumber={playerNumber}
-            updatePlayerName={updatePlayerName}
-            updateTokenColor={updateTokenColor}
+            updatePlayerName={handlerUpdatePlayerName}
+            updateTokenColor={handlerUpdateTokenColor}
             unavailableColors={unavailableColors}
           />
           <div className="player-confirm-settings-container">
