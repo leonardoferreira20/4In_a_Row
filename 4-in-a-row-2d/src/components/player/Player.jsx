@@ -13,7 +13,16 @@ const Player = (props) => {
     updatePlayerVisibility,
     unavailableColors,
     resetConfigurations,
+    updateGameStarted,
   } = props;
+
+  const buttons = document.querySelectorAll(".player-settings-btn-color");
+  const randomColors = [
+    { name: "pink", value: "#e8a6b1" },
+    { name: "orange", value: "#FFA500" },
+    { name: "black", value: "#2b2b2b" },
+    { name: "lightBlue", value: "#85bdcf" },
+  ];
 
   const [playerName, setPlayerName] = useState(null);
   const [tokenColor, setTokenColor] = useState(null);
@@ -25,7 +34,14 @@ const Player = (props) => {
 
   const handlerUpdateTokenColor = (event) => {
     const color = event.currentTarget.value;
-    setTokenColor(color);
+    const availableColors = randomColors.filter((color) => !unavailableColors.includes(color.value));
+
+    buttons.forEach((btn) => btn.classList.remove("selected"));
+    event.currentTarget.classList.add("selected");
+
+    setTokenColor(
+      color == "random" ? availableColors[Math.floor(Math.random() * availableColors.length)].value : color
+    );
   };
 
   const handlerCreatePlayer = () => {
@@ -33,10 +49,25 @@ const Player = (props) => {
       id: playerNumber,
       name: playerName ? playerName : `Jogador ${playerNumber}`,
       tokenColor: tokenColor,
+      points: 0,
     };
 
     updatePlayer(player, playerNumber);
     updatePlayerVisibility();
+
+    if (playerNumber == 2) {
+      updateGameStarted();
+    }
+
+    setPlayerName(null);
+    setTokenColor(null);
+  };
+
+  const resetPlayer = () => {
+    setPlayerName(null);
+    setTokenColor(null);
+    buttons.forEach((btn) => btn.classList.remove("selected"));
+    resetConfigurations();
   };
 
   return (
@@ -46,19 +77,21 @@ const Player = (props) => {
           playerNumber={playerNumber}
           updateControlsVisibility={updateControlsVisibility}
           updateGameGrid={updateGameGrid}
-          resetConfigurations={resetConfigurations}
+          resetConfigurations={resetPlayer}
         />
         <hr />
-
         <div className="player-settings-container">
           <PlayerConfigurations
             playerNumber={playerNumber}
             updatePlayerName={handlerUpdatePlayerName}
+            playerName={playerName}
+            tokenColor={tokenColor}
             updateTokenColor={handlerUpdateTokenColor}
             unavailableColors={unavailableColors}
+            randomColors={randomColors}
           />
           <div className="player-confirm-settings-container">
-            <button className="player-confirm-settings-btn" onClick={handlerCreatePlayer}>
+            <button className="player-confirm-settings-btn" onClick={handlerCreatePlayer} disabled={!tokenColor}>
               <span>Confirmar</span>
             </button>
           </div>

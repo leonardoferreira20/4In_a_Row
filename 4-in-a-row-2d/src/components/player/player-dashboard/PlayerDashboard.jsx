@@ -13,7 +13,7 @@ const PlayerDashboard = (props) => {
           <h3 className="player-dashboard-title">{playerInfo.name}</h3>
         </div>
         <div className="player-dashboard-title-container">
-          <h1 className="player-dashboard-title">0</h1>
+          <h1 className="player-dashboard-title">{playerInfo.points}</h1>
         </div>
       </div>
     </div>

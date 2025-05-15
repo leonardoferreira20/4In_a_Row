@@ -6,7 +6,7 @@
   width: 350px;
   height: 290px;
   background-color: #fbc02d;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 3px solid #470b40;
   padding: 15px;
 }
@@ -57,4 +57,14 @@
 
 .player-confirm-settings-btn:hover span {
   color: #fbc02d;
+}
+
+.player-confirm-settings-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
+.player-confirm-settings-btn:disabled:hover {
+  transform: scale(1);
 }

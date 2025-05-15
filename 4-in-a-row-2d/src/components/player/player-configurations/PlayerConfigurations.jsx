@@ -2,26 +2,23 @@ import React from "react";
 import "./PlayerConfigurations.css";
 
 const PlayerConfigurations = (props) => {
-  const { playerNumber, updatePlayerName, updateTokenColor, unavailableColors } = props;
+  const { playerNumber, playerName, updatePlayerName, updateTokenColor, unavailableColors } = props;
 
-  const handlerChooseTokenColor = (event) => {
-    const buttons = document.querySelectorAll(".player-settings-btn-color");
-
-    buttons.forEach((btn) => btn.classList.remove("selected"));
-    event.currentTarget.classList.add("selected");
-
-    updateTokenColor(event);
-  };
-
-  const handlerIsColorDisabled = (color) => {
-    return unavailableColors.includes(color.value);
-  };
   const colors = [
     { name: "yellow", value: "#ebc315" },
     { name: "red", value: "#bf360c" },
     { name: "green", value: "#81d62c" },
     { name: "purple", value: "#5a2454" },
   ];
+
+  const handlerChooseTokenColor = (event) => {
+    updateTokenColor(event);
+  };
+
+  const handlerIsColorDisabled = (color) => {
+    return unavailableColors.includes(color.value);
+  };
+
   return (
     <>
       <div className="player-settings-name-container">
@@ -31,7 +28,8 @@ const PlayerConfigurations = (props) => {
           className="player-settings-name-input"
           type="text"
           placeholder={"Jogador " + playerNumber + "..."}
-          onKeyUp={updatePlayerName}
+          value={playerName || ""}
+          onChange={updatePlayerName}
         />
       </div>
       <div className="player-settings-color-container">
