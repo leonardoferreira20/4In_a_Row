@@ -6,6 +6,7 @@ import Player from "../player/Player";
 import PlayerDashboard from "../player/player-dashboard/PlayerDashboard";
 import Grid from "../grid-panel/Grid";
 import FinishGame from "../finish-game/FinishGame";
+import Timer from "../Timer/Timer";
 
 const GamePanel = () => {
   // <!-IA - Feito pelo CHATGPT
@@ -180,7 +181,7 @@ const GamePanel = () => {
               {players[1] && <PlayerDashboard playerInfo={players[1]} />}
             </div>
           </div>
-
+          {gameStarted && <Timer timeout={0} onTimer={ () =>{} } updateCurrentPlayer={handlerUpdateCurrentPlayer} currentPlayer={currentPlayer} gameStarted={gameStarted}/>}
           <div style={{ visibility: winner ? "visible" : "hidden", position: "absolute" }}>
             <FinishGame currentPlayer={currentPlayer} />
           </div>
