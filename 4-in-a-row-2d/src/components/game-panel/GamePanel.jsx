@@ -150,9 +150,11 @@ const GamePanel = () => {
   }, [players]);
 
   const handleTime = (time) => {
-    if (time == 10) {
-      handleUpdateCurrentPlayer(currentPlayer);
-    }
+    setTimeout(() => {
+      if (time == 10) {
+        handleUpdateCurrentPlayer(currentPlayer);
+      }
+    }, 1000);
   };
 
   const handleSelectedHole = (hole) => {
