@@ -11,11 +11,11 @@ const PlayerConfigurations = (props) => {
     { name: "purple", value: "#5a2454" },
   ];
 
-  const handlerChooseTokenColor = (event) => {
+  const handleChooseTokenColor = (event) => {
     updateTokenColor(event);
   };
 
-  const handlerIsColorDisabled = (color) => {
+  const handleIsColorDisabled = (color) => {
     return unavailableColors.includes(color.value);
   };
 
@@ -40,11 +40,11 @@ const PlayerConfigurations = (props) => {
               key={color.name}
               className={`player-settings-btn-color ${color.name}`}
               value={color.value}
-              onClick={handlerChooseTokenColor}
-              disabled={handlerIsColorDisabled(color)}
+              onClick={handleChooseTokenColor}
+              disabled={handleIsColorDisabled(color)}
             />
           ))}
-          <button className="player-settings-btn-color random" value="random" onClick={handlerChooseTokenColor}>
+          <button className="player-settings-btn-color random" value="random" onClick={handleChooseTokenColor}>
             ?
           </button>
         </div>

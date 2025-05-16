@@ -4,7 +4,7 @@ import confetti from "canvas-confetti";
 import FinishGame from "../finish-game/FinishGame";
 
 const Grid = (props) => {
-  const { currentPlayer, updateCurrentPlayer, isGameStarted, mousePosition, finishGame } = props;
+  const { currentPlayer, updateCurrentPlayer, isGameStarted, mousePosition, finishGame, selectedHole } = props;
 
   const createGrid = () => {
     const rows = 6;
@@ -35,11 +35,16 @@ const Grid = (props) => {
 
     for (let i = 0; i < gridCheckRow.length; i++) {
       const color = gridCheckRow[i].backgroundColor;
+      const row = gridCheckRow[i].row;
       if (
         color &&
-        color == gridCheckRow[i + 1]?.backgroundColor &&
-        color == gridCheckRow[i + 2]?.backgroundColor &&
-        color == gridCheckRow[i + 3]?.backgroundColor
+        row &&
+        gridCheckRow[i + 1]?.backgroundColor == color &&
+        gridCheckRow[i + 1].row == row &&
+        gridCheckRow[i + 2]?.backgroundColor == color &&
+        gridCheckRow[i + 2].row == row &&
+        gridCheckRow[i + 3]?.backgroundColor == color &&
+        gridCheckRow[i + 3]?.row == row
       ) {
         output = true;
       }
@@ -53,12 +58,17 @@ const Grid = (props) => {
 
     for (let i = 0; i < gridCheckCol.length; i++) {
       const color = gridCheckCol[i].backgroundColor;
+      const col = gridCheckCol[i].col;
 
       if (
         color &&
-        color == gridCheckCol[i + 7]?.backgroundColor &&
-        color == gridCheckCol[i + 14]?.backgroundColor &&
-        color == gridCheckCol[i + 21]?.backgroundColor
+        col &&
+        gridCheckCol[i + 7]?.backgroundColor == color &&
+        gridCheckCol[i + 7].col == col &&
+        gridCheckCol[i + 14]?.backgroundColor == color &&
+        gridCheckCol[i + 14].col == col &&
+        gridCheckCol[i + 21]?.backgroundColor == color &&
+        gridCheckCol[i + 21].col == col
       ) {
         output = true;
       }
@@ -72,12 +82,22 @@ const Grid = (props) => {
 
     for (let i = 0; i < gridCheckMainDiag.length; i++) {
       const color = gridCheckMainDiag[i].backgroundColor;
+      const row = gridCheckMainDiag[i].row;
+      const col = gridCheckMainDiag[i].col;
 
       if (
         color &&
-        gridCheckMainDiag[i + 8]?.backgroundColor === color &&
-        gridCheckMainDiag[i + 16]?.backgroundColor === color &&
-        gridCheckMainDiag[i + 24]?.backgroundColor === color
+        row &&
+        col &&
+        gridCheckMainDiag[i + 8]?.backgroundColor == color &&
+        gridCheckMainDiag[i + 8]?.row == row + 1 &&
+        gridCheckMainDiag[i + 8]?.col == col + 1 &&
+        gridCheckMainDiag[i + 16]?.backgroundColor == color &&
+        gridCheckMainDiag[i + 16]?.row == row + 2 &&
+        gridCheckMainDiag[i + 16]?.col == col + 2 &&
+        gridCheckMainDiag[i + 24]?.backgroundColor == color &&
+        gridCheckMainDiag[i + 24]?.row == row + 3 &&
+        gridCheckMainDiag[i + 24]?.col == col + 3
       ) {
         output = true;
       }
@@ -90,12 +110,22 @@ const Grid = (props) => {
 
     for (let i = 0; i < gridCheckWinSecDiag.length; i++) {
       const color = gridCheckWinSecDiag[i].backgroundColor;
+      const row = gridCheckWinSecDiag[i].row;
+      const col = gridCheckWinSecDiag[i].col;
 
       if (
         color &&
-        gridCheckWinSecDiag[i + 6]?.backgroundColor === color &&
-        gridCheckWinSecDiag[i + 12]?.backgroundColor === color &&
-        gridCheckWinSecDiag[i + 18]?.backgroundColor === color
+        row &&
+        col &&
+        gridCheckWinSecDiag[i + 6]?.backgroundColor == color &&
+        gridCheckWinSecDiag[i + 6]?.row === row + 1 &&
+        gridCheckWinSecDiag[i + 6]?.col === col - 1 &&
+        gridCheckWinSecDiag[i + 12]?.backgroundColor == color &&
+        gridCheckWinSecDiag[i + 12]?.row === row + 2 &&
+        gridCheckWinSecDiag[i + 12]?.col === col - 2 &&
+        gridCheckWinSecDiag[i + 18]?.backgroundColor == color &&
+        gridCheckWinSecDiag[i + 18]?.row === row + 3 &&
+        gridCheckWinSecDiag[i + 18]?.col === col - 3
       ) {
         output = true;
       }
@@ -146,7 +176,7 @@ const Grid = (props) => {
     startConfettis();
   };
 
-  const handlerUpdateGrid = (event, hole) => {
+  const handleUpdateGrid = (event, hole) => {
     const columnCells = grid.filter((cell) => cell.col === hole.col).sort((a, b) => b.row - a.row);
     const targetCell = columnCells.find((cell) => !cell.isSelected);
 
@@ -160,6 +190,7 @@ const Grid = (props) => {
         return cell;
       });
 
+      selectedHole(targetCell);
       setGrid(updatedGrid);
 
       if (
@@ -216,7 +247,7 @@ const Grid = (props) => {
           positionLeft={cell.positionLeft}
           isSelected={cell.isSelected}
           backgroundColor={cell.backgroundColor}
-          updateGrid={handlerUpdateGrid}
+          updateGrid={handleUpdateGrid}
           isGameStarted={isGameStarted}
           isSpecialHole={cell.isSpecialHole}
         />

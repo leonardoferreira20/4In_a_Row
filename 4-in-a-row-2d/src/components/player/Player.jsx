@@ -27,12 +27,12 @@ const Player = (props) => {
   const [playerName, setPlayerName] = useState(null);
   const [tokenColor, setTokenColor] = useState(null);
 
-  const handlerUpdatePlayerName = (event) => {
+  const handleUpdatePlayerName = (event) => {
     const name = event.currentTarget.value;
     setPlayerName(name);
   };
 
-  const handlerUpdateTokenColor = (event) => {
+  const handleUpdateTokenColor = (event) => {
     const color = event.currentTarget.value;
     const availableColors = randomColors.filter((color) => !unavailableColors.includes(color.value));
 
@@ -44,7 +44,7 @@ const Player = (props) => {
     );
   };
 
-  const handlerCreatePlayer = () => {
+  const handleCreatePlayer = () => {
     const player = {
       id: playerNumber,
       name: playerName ? playerName : `Jogador ${playerNumber}`,
@@ -83,15 +83,15 @@ const Player = (props) => {
         <div className="player-settings-container">
           <PlayerConfigurations
             playerNumber={playerNumber}
-            updatePlayerName={handlerUpdatePlayerName}
+            updatePlayerName={handleUpdatePlayerName}
             playerName={playerName}
             tokenColor={tokenColor}
-            updateTokenColor={handlerUpdateTokenColor}
+            updateTokenColor={handleUpdateTokenColor}
             unavailableColors={unavailableColors}
             randomColors={randomColors}
           />
           <div className="player-confirm-settings-container">
-            <button className="player-confirm-settings-btn" onClick={handlerCreatePlayer} disabled={!tokenColor}>
+            <button className="player-confirm-settings-btn" onClick={handleCreatePlayer} disabled={!tokenColor}>
               <span>Confirmar</span>
             </button>
           </div>

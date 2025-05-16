@@ -6,7 +6,7 @@ import Player from "../player/Player";
 import PlayerDashboard from "../player/player-dashboard/PlayerDashboard";
 import Grid from "../grid-panel/Grid";
 import FinishGame from "../finish-game/FinishGame";
-import Timer from "../Timer/Timer";
+import Timer from "../timer/Timer";
 
 const GamePanel = () => {
   // <!-IA - Feito pelo CHATGPT
@@ -68,9 +68,10 @@ const GamePanel = () => {
   const [winner, setWinner] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState(null);
   const [mousePosition, setMousePosition] = useState(0);
+  const [timerResetKey, setTimerResetKey] = useState(0);
 
   // Eliminar todas as peças da grelha para começar um jogo
-  const handlerClearAllCells = () => {
+  const handleClearAllCells = () => {
     setGrid((prevGrid) =>
       prevGrid.map((cell) => ({
         ...cell,
@@ -81,20 +82,20 @@ const GamePanel = () => {
   };
 
   // Atualizar o tabuleiro de jogo
-  const handlerUpdateGameBoard = () => {
+  const handleUpdateGameBoard = () => {
     setGrid(() => generateGrid());
   };
 
-  const handlerUpdateStartGameVisibility = () => setIsStartGameVisible(!isStartGameVisible);
+  const handleUpdateStartGameVisibility = () => setIsStartGameVisible(!isStartGameVisible);
 
-  const handlerUpdateGameMode = (selectedGameMode) => {
+  const handleUpdateGameMode = (selectedGameMode) => {
     setGameMode(selectedGameMode);
-    handlerUpdateNumberOfPlayers(selectedGameMode);
+    handleUpdateNumberOfPlayers(selectedGameMode);
   };
 
-  const handlerUpdateNumberOfPlayers = (mode) => setNumberOfPlayers(mode == "player" ? 2 : 1);
+  const handleUpdateNumberOfPlayers = (mode) => setNumberOfPlayers(mode == "player" ? 2 : 1);
 
-  const handlerPlayerCreated = (player, index) => {
+  const handlePlayerCreated = (player, index) => {
     setPlayers((prev) => {
       const updated = [...prev];
       updated[index - 1] = player; // index: 1 ou 2
@@ -102,35 +103,35 @@ const GamePanel = () => {
     });
   };
 
-  const handlerCheckPlayer1Visibility = () => setIsPlayer1Visible(false);
+  const handleCheckPlayer1Visibility = () => setIsPlayer1Visible(false);
 
-  const handlerCheckPlayer2Visibility = () => {
-    handlerCheckPlayer1Visibility(!isPlayer1Visible);
+  const handleCheckPlayer2Visibility = () => {
+    handleCheckPlayer1Visibility(!isPlayer1Visible);
     setIsPlayer2Visible(!isPlayer2Visible);
   };
 
-  const handlerResetConfigurations = () => {
+  const handleResetConfigurations = () => {
     setPlayers([]);
     setGameMode(null);
     setIsPlayer1Visible(true);
     setIsPlayer2Visible(false);
   };
 
-  const handlerUpdateGameStarted = () => {
+  const handleUpdateGameStarted = () => {
     setGameStarted(true);
   };
 
-  const handlerFinishGame = () => {
+  const handleFinishGame = () => {
     setWinner(true);
     setGameStarted(false);
   };
 
-  const handlerUpdateCurrentPlayer = (player) => {
+  const handleUpdateCurrentPlayer = (player) => {
     const nextPlayer = players.find((p) => p.id !== player.id);
     setCurrentPlayer(nextPlayer);
   };
 
-  const handlerMousePosition = (event) => {
+  const handleMousePosition = (event) => {
     const boardElement = document.getElementById("game-panel-board");
 
     if (boardElement) {
@@ -148,6 +149,18 @@ const GamePanel = () => {
     }
   }, [players]);
 
+  const handleTime = (time) => {
+    if (time == 10) {
+      handleUpdateCurrentPlayer(currentPlayer);
+    }
+  };
+
+  const handleSelectedHole = (hole) => {
+    if (hole.isSpecialHole) {
+      setTimerResetKey((prevTimer) => prevTimer + 1);
+    }
+  };
+
   return (
     <div className="game-panel-container">
       <div>
@@ -157,17 +170,21 @@ const GamePanel = () => {
             <div style={{ visibility: players[0] ? "visible" : "hidden" }}>
               {players[0] && <PlayerDashboard playerInfo={players[0]} />}
             </div>
+            {gameStarted && currentPlayer && players[0].id == currentPlayer.id && (
+              <Timer key={`${currentPlayer.id}-${timerResetKey}`} timeout={0} onTimer={handleTime} />
+            )}
           </div>
 
           {/* Grelha de Jogo */}
           <div style={{ flexShrink: 0 }}>
-            <div id="game-panel-board" className="game-panel-board" onMouseMove={handlerMousePosition}>
+            <div id="game-panel-board" className="game-panel-board" onMouseMove={handleMousePosition}>
               <Grid
                 currentPlayer={currentPlayer}
                 isGameStarted={gameStarted}
                 mousePosition={mousePosition}
-                updateCurrentPlayer={handlerUpdateCurrentPlayer}
-                finishGame={handlerFinishGame}
+                updateCurrentPlayer={handleUpdateCurrentPlayer}
+                finishGame={handleFinishGame}
+                selectedHole={handleSelectedHole}
               ></Grid>
               <div className="game-panel-left-side-base"></div>
               <div className="game-panel-base"></div>
@@ -180,8 +197,11 @@ const GamePanel = () => {
             <div style={{ visibility: players[1] ? "visible" : "hidden" }}>
               {players[1] && <PlayerDashboard playerInfo={players[1]} />}
             </div>
+            {gameStarted && currentPlayer && players[1].id == currentPlayer.id && (
+              <Timer key={`${currentPlayer.id}-${timerResetKey}`} timeout={0} onTimer={handleTime} />
+            )}
           </div>
-          {gameStarted && <Timer timeout={0} onTimer={ () =>{} } updateCurrentPlayer={handlerUpdateCurrentPlayer} currentPlayer={currentPlayer} gameStarted={gameStarted}/>}
+
           <div style={{ visibility: winner ? "visible" : "hidden", position: "absolute" }}>
             <FinishGame currentPlayer={currentPlayer} />
           </div>
@@ -190,9 +210,9 @@ const GamePanel = () => {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <StartGame
             isVisible={isStartGameVisible}
-            updateControlsVisibility={handlerUpdateStartGameVisibility}
-            clearBoardGame={handlerClearAllCells}
-            gameMode={handlerUpdateGameMode}
+            updateControlsVisibility={handleUpdateStartGameVisibility}
+            clearBoardGame={handleClearAllCells}
+            gameMode={handleUpdateGameMode}
           />
 
           <div className="player-container">
@@ -201,13 +221,13 @@ const GamePanel = () => {
               <Player
                 playerNumber="1"
                 isVisible={isStartGameVisible}
-                updateControlsVisibility={handlerUpdateStartGameVisibility}
-                updateGameGrid={handlerUpdateGameBoard}
-                updatePlayer={(player) => handlerPlayerCreated(player, 1)}
-                updatePlayerVisibility={handlerCheckPlayer2Visibility}
-                resetConfigurations={handlerResetConfigurations}
+                updateControlsVisibility={handleUpdateStartGameVisibility}
+                updateGameGrid={handleUpdateGameBoard}
+                updatePlayer={(player) => handlePlayerCreated(player, 1)}
+                updatePlayerVisibility={handleCheckPlayer2Visibility}
+                resetConfigurations={handleResetConfigurations}
                 unavailableColors={[]}
-                updateGameStarted={handlerUpdateGameStarted}
+                updateGameStarted={handleUpdateGameStarted}
               />
             </div>
 
@@ -219,13 +239,13 @@ const GamePanel = () => {
               <Player
                 playerNumber="2"
                 isVisible={isStartGameVisible}
-                updateControlsVisibility={handlerUpdateStartGameVisibility}
-                updateGameGrid={handlerUpdateGameBoard}
-                updatePlayer={(player) => handlerPlayerCreated(player, 2)}
-                updatePlayerVisibility={handlerCheckPlayer2Visibility}
-                resetConfigurations={handlerResetConfigurations}
+                updateControlsVisibility={handleUpdateStartGameVisibility}
+                updateGameGrid={handleUpdateGameBoard}
+                updatePlayer={(player) => handlePlayerCreated(player, 2)}
+                updatePlayerVisibility={handleCheckPlayer2Visibility}
+                resetConfigurations={handleResetConfigurations}
                 unavailableColors={players[0]?.tokenColor ? [players[0].tokenColor] : []}
-                updateGameStarted={handlerUpdateGameStarted}
+                updateGameStarted={handleUpdateGameStarted}
               />
             </div>
           </div>
