@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Player.css";
 import PlayerHeader from "./player-header/PlayerHeader";
 import PlayerConfigurations from "./player-configurations/PlayerConfigurations";
@@ -14,6 +14,8 @@ const Player = (props) => {
     unavailableColors,
     resetConfigurations,
     updateGameStarted,
+    gameMode,
+    updateComputer,
   } = props;
 
   const buttons = document.querySelectorAll(".player-settings-btn-color");
@@ -32,16 +34,18 @@ const Player = (props) => {
     setPlayerName(name);
   };
 
+  const getRandomColors = (randomColor) => {
+    const availableColors = randomColors.filter((randomColor) => !unavailableColors.includes(randomColor.value));
+    return availableColors[Math.floor(Math.random() * availableColors.length)].value;
+  };
+
   const handleUpdateTokenColor = (event) => {
     const color = event.currentTarget.value;
-    const availableColors = randomColors.filter((color) => !unavailableColors.includes(color.value));
 
     buttons.forEach((btn) => btn.classList.remove("selected"));
     event.currentTarget.classList.add("selected");
 
-    setTokenColor(
-      color == "random" ? availableColors[Math.floor(Math.random() * availableColors.length)].value : color
-    );
+    setTokenColor(color == "random" ? getRandomColors(color) : color);
   };
 
   const handleCreatePlayer = () => {
@@ -55,8 +59,21 @@ const Player = (props) => {
     updatePlayer(player, playerNumber);
     updatePlayerVisibility();
 
-    if (playerNumber == 2) {
+    if (playerNumber == 2 || gameMode == "computer") {
       updateGameStarted();
+
+      if (gameMode == "computer") {
+        unavailableColors.push(tokenColor);
+
+        const computer = {
+          id: "3",
+          name: "Computador",
+          tokenColor: getRandomColors({ name: "random", value: tokenColor }),
+          points: 0,
+        };
+
+        updateComputer(computer);
+      }
     }
 
     setPlayerName(null);

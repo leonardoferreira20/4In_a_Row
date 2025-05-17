@@ -11,10 +11,11 @@ const Hole = (props) => {
     updateGrid,
     isGameStarted,
     isSpecialHole,
+    currentPlayer,
   } = props;
 
   const getHole = (event) => {
-    updateGrid(event, holeSettings);
+    updateGrid(holeSettings);
   };
 
   return (
@@ -26,7 +27,7 @@ const Hole = (props) => {
         backgroundColor: backgroundColor,
         boxShadow: isSelected ? "none" : "inset 0 0 15px 3px #bbb",
         cursor: isGameStarted ? "pointer" : "default",
-        pointerEvents: isGameStarted ? "auto" : "none",
+        pointerEvents: isGameStarted && currentPlayer?.id != 3 ? "auto" : "none",
       }}
       className={isSpecialHole ? "hole-container special-hole" : "hole-container"}
       onClick={getHole}

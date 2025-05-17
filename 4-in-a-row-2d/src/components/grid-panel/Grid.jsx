@@ -29,8 +29,9 @@ const Grid = (props) => {
   };
 
   const [grid, setGrid] = useState(() => createGrid());
+  const playerComputerId = "3";
 
-  const checkWinRow = (gridCheckRow) => {
+  const handleCheckWinRow = (gridCheckRow) => {
     let output = false;
 
     for (let i = 0; i < gridCheckRow.length; i++) {
@@ -53,7 +54,7 @@ const Grid = (props) => {
     return output;
   };
 
-  const checkWinCol = (gridCheckCol) => {
+  const handleCheckWinCol = (gridCheckCol) => {
     let output = false;
 
     for (let i = 0; i < gridCheckCol.length; i++) {
@@ -77,7 +78,7 @@ const Grid = (props) => {
     return output;
   };
 
-  const checkWinMainDiag = (gridCheckMainDiag) => {
+  const handleCheckWinMainDiag = (gridCheckMainDiag) => {
     let output = false;
 
     for (let i = 0; i < gridCheckMainDiag.length; i++) {
@@ -105,7 +106,7 @@ const Grid = (props) => {
 
     return output;
   };
-  const checkWinSecDiag = (gridCheckWinSecDiag) => {
+  const handleCheckWinSecDiag = (gridCheckWinSecDiag) => {
     let output = false;
 
     for (let i = 0; i < gridCheckWinSecDiag.length; i++) {
@@ -134,7 +135,7 @@ const Grid = (props) => {
     return output;
   };
 
-  const startConfettis = () => {
+  const handleStartConfettis = () => {
     var duration = 5 * 1000;
     var end = Date.now() + duration;
 
@@ -159,7 +160,7 @@ const Grid = (props) => {
     })();
   };
 
-  const clearGrid = () => {
+  const handleClearGrid = () => {
     setGrid((prevGrid) =>
       prevGrid.map((cell) => ({
         ...cell,
@@ -169,44 +170,124 @@ const Grid = (props) => {
     );
   };
 
-  const winner = () => {
-    //clearGrid();
+  const handleWinner = () => {
+    //handleClearGrid();
     currentPlayer.points += 1;
     finishGame();
-    startConfettis();
+    handleStartConfettis();
   };
 
-  const handleUpdateGrid = (event, hole) => {
+  const animateDrop = (columnCells, finalCell, onComplete) => {
+    let i = 0;
+
+    const animateStep = () => {
+      if (i < columnCells.length) {
+        const cell = columnCells[i];
+
+        if (cell.row < finalCell.row) {
+          // Marcar célula com cor temporária
+          setGrid((prev) =>
+            prev.map((c) =>
+              c.row === cell.row && c.col === cell.col
+                ? { ...c, isSelected: true, backgroundColor: currentPlayer.tokenColor }
+                : c
+            )
+          );
+
+          setTimeout(() => {
+            setGrid((prev) =>
+              prev.map((c) =>
+                c.row === cell.row && c.col === cell.col ? { ...c, isSelected: false, backgroundColor: null } : c
+              )
+            );
+            i++;
+            animateStep();
+          }, 90);
+        } else {
+          i++;
+          animateStep(); // saltar células acima da final
+        }
+      } else {
+        onComplete();
+      }
+    };
+
+    animateStep();
+  };
+
+  const handleUpdateGrid = async (hole) => {
     const columnCells = grid.filter((cell) => cell.col === hole.col).sort((a, b) => b.row - a.row);
     const targetCell = columnCells.find((cell) => !cell.isSelected);
 
     if (targetCell && isGameStarted) {
       const updatedGrid = grid.map((cell) => {
         if (cell.row === targetCell.row && cell.col === targetCell.col) {
-          cell.isSelected = true;
-          cell.backgroundColor = currentPlayer?.tokenColor;
+          return {
+            ...cell,
+            isSelected: true,
+            backgroundColor: currentPlayer?.tokenColor,
+          };
         }
-
         return cell;
       });
 
-      selectedHole(targetCell);
-      setGrid(updatedGrid);
+      animateDrop([...columnCells].reverse(), targetCell, () => {
+        // Só é executado depois da animação com setTimeouts
+        selectedHole(targetCell);
 
-      if (
-        checkWinRow(updatedGrid) ||
-        checkWinCol(updatedGrid) ||
-        checkWinMainDiag(updatedGrid) ||
-        checkWinSecDiag(updatedGrid)
-      ) {
-        winner();
-      } else {
-        if (!targetCell.isSpecialHole) {
-          updateCurrentPlayer(currentPlayer);
+        setGrid((prev) =>
+          prev.map((c) =>
+            c.row === targetCell.row && c.col === targetCell.col
+              ? { ...c, isSelected: true, backgroundColor: currentPlayer.tokenColor }
+              : c
+          )
+        );
+
+        const isWin =
+          handleCheckWinRow(updatedGrid) ||
+          handleCheckWinCol(updatedGrid) ||
+          handleCheckWinMainDiag(updatedGrid) ||
+          handleCheckWinSecDiag(updatedGrid);
+
+        if (isWin) {
+          handleWinner();
+        } else {
+          if (!targetCell.isSpecialHole) {
+            updateCurrentPlayer(currentPlayer);
+          } else if (currentPlayer?.id == playerComputerId) {
+            setTimeout(() => {
+              handleComputerMove();
+            }, 1000);
+          }
         }
-      }
+      });
     }
   };
+
+  // Computer random movements
+  const handleComputerMove = () => {
+    const availableColumns = [];
+
+    grid.forEach((cell) => {
+      if (!cell.isSelected && !availableColumns.includes(cell.col)) {
+        availableColumns.push(cell.col);
+      }
+    });
+
+    if (availableColumns.length > 0) {
+      const randomCol = availableColumns[Math.floor(Math.random() * availableColumns.length)]; // Selects a random column
+
+      setTimeout(() => {
+        handleUpdateGrid({ col: randomCol });
+      }, 1500);
+    }
+  };
+
+  useEffect(() => {
+    if (currentPlayer?.id == playerComputerId && isGameStarted) {
+      handleComputerMove();
+    }
+  }, [currentPlayer, isGameStarted]);
 
   useEffect(() => {
     const specialIndices = [];
@@ -230,13 +311,14 @@ const Grid = (props) => {
 
   return (
     <div>
-      <div style={{ visibility: isGameStarted ? "visible" : "hidden" }}>
+      <div style={{ visibility: isGameStarted && currentPlayer?.id !== playerComputerId ? "visible" : "hidden" }}>
         <Hole
           positionTop="-80"
           positionLeft={mousePosition - 30}
           backgroundColor={currentPlayer?.tokenColor}
           isSelected={true}
           isSpecialHole={false}
+          currentPlayer={null}
         />
       </div>
       {grid.map((cell, index) => (
@@ -250,6 +332,7 @@ const Grid = (props) => {
           updateGrid={handleUpdateGrid}
           isGameStarted={isGameStarted}
           isSpecialHole={cell.isSpecialHole}
+          currentPlayer={currentPlayer}
         />
       ))}
     </div>

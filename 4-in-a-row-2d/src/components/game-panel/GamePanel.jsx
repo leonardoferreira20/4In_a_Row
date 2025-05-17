@@ -60,7 +60,6 @@ const GamePanel = () => {
   const [grid, setGrid] = useState(() => generateGrid());
   const [isStartGameVisible, setIsStartGameVisible] = useState(true); // Para esconder as opções de jogo (vs jogador | vs computador)
   const [gameMode, setGameMode] = useState(null); // Selecionar o modo de jogo
-  const [numberOfPlayers, setNumberOfPlayers] = useState(0); // Atualizar o numero de jogadores
   const [players, setPlayers] = useState([]);
   const [isPlayer1Visible, setIsPlayer1Visible] = useState(true);
   const [isPlayer2Visible, setIsPlayer2Visible] = useState(false);
@@ -90,15 +89,19 @@ const GamePanel = () => {
 
   const handleUpdateGameMode = (selectedGameMode) => {
     setGameMode(selectedGameMode);
-    handleUpdateNumberOfPlayers(selectedGameMode);
   };
-
-  const handleUpdateNumberOfPlayers = (mode) => setNumberOfPlayers(mode == "player" ? 2 : 1);
 
   const handlePlayerCreated = (player, index) => {
     setPlayers((prev) => {
       const updated = [...prev];
-      updated[index - 1] = player; // index: 1 ou 2
+      updated[index - 1] = player;
+      return updated;
+    });
+  };
+  const handleComputerCreated = (computer, index) => {
+    setPlayers((prev) => {
+      const updated = [...prev];
+      updated[index - 2] = computer;
       return updated;
     });
   };
@@ -230,13 +233,15 @@ const GamePanel = () => {
                 resetConfigurations={handleResetConfigurations}
                 unavailableColors={[]}
                 updateGameStarted={handleUpdateGameStarted}
+                gameMode={gameMode}
+                updateComputer={(computer) => handleComputerCreated(computer, 3)}
               />
             </div>
 
             {/* JOGADOR 2 */}
             <div
               className="player-container"
-              style={{ display: isPlayer2Visible && numberOfPlayers == 2 ? "flex" : "none" }}
+              style={{ display: isPlayer2Visible && gameMode == "player" ? "flex" : "none" }}
             >
               <Player
                 playerNumber="2"
@@ -248,6 +253,7 @@ const GamePanel = () => {
                 resetConfigurations={handleResetConfigurations}
                 unavailableColors={players[0]?.tokenColor ? [players[0].tokenColor] : []}
                 updateGameStarted={handleUpdateGameStarted}
+                gameMode={gameMode}
               />
             </div>
           </div>
