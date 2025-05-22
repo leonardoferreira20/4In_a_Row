@@ -4,7 +4,7 @@ import confetti from "canvas-confetti";
 import FinishGame from "../finish-game/FinishGame";
 
 const Grid = (props) => {
-  const { currentPlayer, updateCurrentPlayer, isGameStarted, mousePosition, finishGame, selectedHole } = props;
+  const { currentPlayer, updateCurrentPlayer, isGameStarted, mousePosition, finishGame, selectedHole, teste } = props;
 
   const createGrid = () => {
     const rows = 6;

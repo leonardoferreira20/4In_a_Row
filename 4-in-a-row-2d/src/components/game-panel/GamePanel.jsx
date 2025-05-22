@@ -165,7 +165,13 @@ const GamePanel = () => {
       setTimerResetKey((prevTimer) => prevTimer + 1);
     }
   };
-
+  const handlePlayAgain = (hole) => {
+    setWinner (false)
+    handleUpdateGameStarted()
+    
+    
+  };
+  const teste = ()=> {}
   return (
     <div className="game-panel-container">
       <div>
@@ -190,6 +196,7 @@ const GamePanel = () => {
                 updateCurrentPlayer={handleUpdateCurrentPlayer}
                 finishGame={handleFinishGame}
                 selectedHole={handleSelectedHole}
+                teste={teste}
               ></Grid>
               <div className="game-panel-left-side-base"></div>
               <div className="game-panel-base"></div>
@@ -208,7 +215,8 @@ const GamePanel = () => {
           </div>
 
           <div style={{ visibility: winner ? "visible" : "hidden", position: "absolute" }}>
-            <FinishGame currentPlayer={currentPlayer} />
+            <FinishGame currentPlayer={currentPlayer} playAgain={handlePlayAgain}/>
+            
           </div>
         </div>
 
