@@ -96,7 +96,7 @@ const Player = (props) => {
           updateGameGrid={updateGameGrid}
           resetConfigurations={resetPlayer}
         />
-        <hr />
+        <hr className="player-separator" />
         <div className="player-settings-container">
           <PlayerConfigurations
             playerNumber={playerNumber}

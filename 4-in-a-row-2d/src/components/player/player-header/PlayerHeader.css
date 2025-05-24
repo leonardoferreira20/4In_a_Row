@@ -6,16 +6,11 @@
 
 .player-close-nav-container,
 .player-close-btn-container {
-  display: flex;
-}
-
-.player-close-nav-container {
-  justify-content: flex-start;
-  text-align: left;
+  display: inline-block;
 }
 
 .player-close-btn-container {
-  justify-content: flex-end;
+  float: right;
 }
 
 .player-close-nav-title {

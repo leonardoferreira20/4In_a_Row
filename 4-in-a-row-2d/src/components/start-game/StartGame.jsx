@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./StartGame.css";
 
 const StartGame = (props) => {
-  const { isVisible, updateControlsVisibility, clearBoardGame, gameMode } = props;
+  const { isVisible, updateControlsVisibility, gameMode } = props;
 
   const [isPlayOptionsVisible, setIsPlayOptionsVisible] = useState(false);
 
@@ -13,7 +13,6 @@ const StartGame = (props) => {
   const handlePlayOptionSelected = (event) => {
     gameMode(event.currentTarget.value);
     updateControlsVisibility();
-    clearBoardGame();
   };
 
   return (

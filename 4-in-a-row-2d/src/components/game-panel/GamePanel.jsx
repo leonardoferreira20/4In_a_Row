@@ -8,84 +8,24 @@ import Grid from "../grid-panel/Grid";
 import FinishGame from "../finish-game/FinishGame";
 import Timer from "../timer/Timer";
 
-const GamePanel = () => {
-  // <!-IA - Feito pelo CHATGPT
-  // Está a preencher com peças random para a página inicial (É possivel visualizar quando se faz refresh à página)
-  const generateGrid = () => {
-    const rows = 6;
-    const columns = 7;
-    const grid = [];
-    const totalMoves = 10;
+const GamePanel = (props) => {
+  const { updateGame, isGameVisible, gameVisibility, resetGame } = props;
 
-    // Inicializa todas as células vazias
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < columns; col++) {
-        grid.push({
-          positionTop: 20 + row * 75,
-          positionLeft: 20 + col * 75,
-          isSelected: false,
-          backgroundColor: null,
-          row,
-          col,
-        });
-      }
-    }
-
-    // Mapeia colunas para saber até onde cada uma foi preenchida
-    const columnHeights = Array(columns).fill(rows - 1); // [5,5,5,5,5,5,5]
-
-    for (let i = 0; i < totalMoves; i++) {
-      let col;
-      let row;
-
-      // Escolhe coluna que ainda tenha espaço
-      do {
-        col = Math.floor(Math.random() * columns);
-        row = columnHeights[col];
-      } while (row < 0); // todas as linhas dessa coluna estão ocupadas
-
-      // Define a célula correspondente
-      const cellIndex = grid.findIndex((cell) => cell.row === row && cell.col === col);
-      if (cellIndex !== -1) {
-        grid[cellIndex].isSelected = true;
-        grid[cellIndex].backgroundColor = Math.random() < 0.5 ? "#bf360c" : "#ebc315";
-        columnHeights[col]--; // ocupa a linha de baixo dessa coluna
-      }
-    }
-
-    return grid;
-  };
-  // ->
-
-  const [grid, setGrid] = useState(() => generateGrid());
-  const [isStartGameVisible, setIsStartGameVisible] = useState(true); // Para esconder as opções de jogo (vs jogador | vs computador)
+  const [gameStarted, setGameStarted] = useState(false);
   const [gameMode, setGameMode] = useState(null); // Selecionar o modo de jogo
   const [players, setPlayers] = useState([]);
   const [isPlayer1Visible, setIsPlayer1Visible] = useState(true);
   const [isPlayer2Visible, setIsPlayer2Visible] = useState(false);
-  const [gameStarted, setGameStarted] = useState(false);
   const [winner, setWinner] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState(null);
   const [mousePosition, setMousePosition] = useState(0);
   const [timerResetKey, setTimerResetKey] = useState(0);
-
-  // Eliminar todas as peças da grelha para começar um jogo
-  const handleClearAllCells = () => {
-    setGrid((prevGrid) =>
-      prevGrid.map((cell) => ({
-        ...cell,
-        isSelected: false,
-        backgroundColor: "#fff",
-      }))
-    );
-  };
+  const [resetGrid, setResetGrid] = useState(() => () => {});
 
   // Atualizar o tabuleiro de jogo
   const handleUpdateGameBoard = () => {
     setGrid(() => generateGrid());
   };
-
-  const handleUpdateStartGameVisibility = () => setIsStartGameVisible(!isStartGameVisible);
 
   const handleUpdateGameMode = (selectedGameMode) => {
     setGameMode(selectedGameMode);
@@ -98,6 +38,7 @@ const GamePanel = () => {
       return updated;
     });
   };
+
   const handleComputerCreated = (computer, index) => {
     setPlayers((prev) => {
       const updated = [...prev];
@@ -122,11 +63,7 @@ const GamePanel = () => {
 
   const handleUpdateGameStarted = () => {
     setGameStarted(true);
-  };
-
-  const handleFinishGame = () => {
-    setWinner(true);
-    setGameStarted(false);
+    updateGame(true);
   };
 
   const handleUpdateCurrentPlayer = (player) => {
@@ -145,13 +82,6 @@ const GamePanel = () => {
     }
   };
 
-  useEffect(() => {
-    if (players.length > 1) {
-      const randomIndex = Math.floor(Math.random() * players.length);
-      setCurrentPlayer(players[randomIndex]);
-    }
-  }, [players]);
-
   const handleTime = (time) => {
     setTimeout(() => {
       if (time == 10) {
@@ -165,13 +95,50 @@ const GamePanel = () => {
       setTimerResetKey((prevTimer) => prevTimer + 1);
     }
   };
-  const handlePlayAgain = (hole) => {
-    setWinner (false)
-    handleUpdateGameStarted()
-    
-    
+
+  const handleClearGrid = (clearGrid) => {
+    setResetGrid(() => clearGrid);
   };
-  const teste = ()=> {}
+
+  const handleFinishGame = () => {
+    setWinner(true);
+    setGameStarted(false);
+    updateGame(false);
+  };
+
+  const handlePlayAgain = () => {
+    setWinner(false);
+    handleUpdateGameStarted();
+    resetGrid();
+  };
+
+  useEffect(() => {
+    resetGame(() => {
+      setGameMode(null);
+      setPlayers([]);
+      setIsPlayer1Visible(true);
+      setIsPlayer2Visible(false);
+      setCurrentPlayer(null);
+      setTimerResetKey(0);
+      setWinner(false);
+      setGameStarted(false);
+      resetGrid();
+      updateGame(false);
+    });
+  }, [currentPlayer]);
+
+  const handleHidePanel = () => {
+    setWinner(false);
+    updateGame(true);
+  };
+
+  useEffect(() => {
+    if (players.length > 1) {
+      const randomIndex = Math.floor(Math.random() * players.length);
+      setCurrentPlayer(players[randomIndex]);
+    }
+  }, [players]);
+
   return (
     <div className="game-panel-container">
       <div>
@@ -195,8 +162,8 @@ const GamePanel = () => {
                 mousePosition={mousePosition}
                 updateCurrentPlayer={handleUpdateCurrentPlayer}
                 finishGame={handleFinishGame}
+                clearGrid={handleClearGrid}
                 selectedHole={handleSelectedHole}
-                teste={teste}
               ></Grid>
               <div className="game-panel-left-side-base"></div>
               <div className="game-panel-base"></div>
@@ -214,17 +181,17 @@ const GamePanel = () => {
             )}
           </div>
 
-          <div style={{ visibility: winner ? "visible" : "hidden", position: "absolute" }}>
-            <FinishGame currentPlayer={currentPlayer} playAgain={handlePlayAgain}/>
-            
-          </div>
+          {winner && (
+            <div style={{ position: "absolute" }}>
+              <FinishGame currentPlayer={currentPlayer} playAgain={handlePlayAgain} hidePanel={handleHidePanel} />
+            </div>
+          )}
         </div>
 
         <div style={{ display: "flex", justifyContent: "center" }}>
           <StartGame
-            isVisible={isStartGameVisible}
-            updateControlsVisibility={handleUpdateStartGameVisibility}
-            clearBoardGame={handleClearAllCells}
+            isVisible={isGameVisible}
+            updateControlsVisibility={gameVisibility}
             gameMode={handleUpdateGameMode}
           />
 
@@ -233,8 +200,8 @@ const GamePanel = () => {
             <div className="player-container" style={{ display: isPlayer1Visible ? "flex" : "none" }}>
               <Player
                 playerNumber="1"
-                isVisible={isStartGameVisible}
-                updateControlsVisibility={handleUpdateStartGameVisibility}
+                isVisible={isGameVisible}
+                updateControlsVisibility={gameVisibility}
                 updateGameGrid={handleUpdateGameBoard}
                 updatePlayer={(player) => handlePlayerCreated(player, 1)}
                 updatePlayerVisibility={handleCheckPlayer2Visibility}
@@ -253,8 +220,8 @@ const GamePanel = () => {
             >
               <Player
                 playerNumber="2"
-                isVisible={isStartGameVisible}
-                updateControlsVisibility={handleUpdateStartGameVisibility}
+                isVisible={isGameVisible}
+                updateControlsVisibility={gameVisibility}
                 updateGameGrid={handleUpdateGameBoard}
                 updatePlayer={(player) => handlePlayerCreated(player, 2)}
                 updatePlayerVisibility={handleCheckPlayer2Visibility}

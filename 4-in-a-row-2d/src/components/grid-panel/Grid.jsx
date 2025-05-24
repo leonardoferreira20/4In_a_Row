@@ -4,7 +4,8 @@ import confetti from "canvas-confetti";
 import FinishGame from "../finish-game/FinishGame";
 
 const Grid = (props) => {
-  const { currentPlayer, updateCurrentPlayer, isGameStarted, mousePosition, finishGame, selectedHole, teste } = props;
+  const { currentPlayer, updateCurrentPlayer, isGameStarted, mousePosition, finishGame, selectedHole, clearGrid } =
+    props;
 
   const createGrid = () => {
     const rows = 6;
@@ -171,7 +172,6 @@ const Grid = (props) => {
   };
 
   const handleWinner = () => {
-    //handleClearGrid();
     currentPlayer.points += 1;
     finishGame();
     handleStartConfettis();
@@ -215,7 +215,7 @@ const Grid = (props) => {
     animateStep();
   };
 
-  const handleUpdateGrid = async (hole) => {
+  const handleUpdateGrid = (hole) => {
     const columnCells = grid.filter((cell) => cell.col === hole.col).sort((a, b) => b.row - a.row);
     const targetCell = columnCells.find((cell) => !cell.isSelected);
 
@@ -275,17 +275,22 @@ const Grid = (props) => {
     });
 
     if (availableColumns.length > 0) {
-      const randomCol = availableColumns[Math.floor(Math.random() * availableColumns.length)]; // Selects a random column
-
-      setTimeout(() => {
-        handleUpdateGrid({ col: randomCol });
-      }, 1500);
+      const randomCol = availableColumns[Math.floor(Math.random() * availableColumns.length)];
+      handleUpdateGrid({ col: randomCol });
     }
   };
 
   useEffect(() => {
-    if (currentPlayer?.id == playerComputerId && isGameStarted) {
-      handleComputerMove();
+    clearGrid(handleClearGrid);
+  }, []);
+
+  useEffect(() => {
+    if (currentPlayer?.id === playerComputerId && isGameStarted) {
+      const timeoutId = setTimeout(() => {
+        handleComputerMove();
+      }, 1500);
+
+      return clearTimeout(timeoutId);
     }
   }, [currentPlayer, isGameStarted]);
 

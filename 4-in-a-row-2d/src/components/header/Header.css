@@ -2,11 +2,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
+  padding: 20px 0;
 }
 
-.info-container,
-.sound-container {
+.header-container .info-container,
+.header-container .sound-container {
   flex: 1;
   display: flex;
   align-items: center;
@@ -14,7 +14,7 @@
 }
 
 .info-container {
-  justify-content: flex-start;
+  justify-content: start;
 }
 
 .sound-container {
@@ -53,11 +53,13 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  transform: translateY(-66px);
+  /* transform: translateY(-66px); */
+  margin-top: 0;
 }
 
 .btn-info,
-.btn-sound {
+.btn-sound,
+.btn-back {
   position: relative;
   cursor: pointer;
   font-family: "Press Start 2P", system-ui;
@@ -73,8 +75,19 @@
   transition: transform 0.3s ease;
 }
 
-.btn-sound {
+.btn-back {
+  position: absolute;
+}
+
+.playing {
   background-image: url(../../assets/low-volume.png);
+}
+
+.muted {
+  background-image: url(../../assets/mute.png);
+}
+
+.btn-sound {
   background-size: 24px;
   background-repeat: no-repeat;
   background-position: center;
@@ -82,7 +95,8 @@
 }
 
 .btn-info::before,
-.btn-sound::before {
+.btn-sound::before,
+.btn-back::before {
   content: "";
   position: absolute;
   top: 12px;
@@ -94,6 +108,7 @@
 }
 
 .btn-info:hover,
-.btn-sound:hover {
+.btn-sound:hover,
+.btn-back:hover {
   transform: scale(1.07);
 }
