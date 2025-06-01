@@ -113,6 +113,8 @@ const GamePanel = (props) => {
   };
 
   useEffect(() => {
+    const buttons = document.querySelectorAll(".player-settings-btn-color");
+
     resetGame(() => {
       setGameMode(null);
       setPlayers([]);
@@ -124,6 +126,7 @@ const GamePanel = (props) => {
       setGameStarted(false);
       resetGrid();
       updateGame(false);
+      buttons.forEach((btn) => btn.classList.remove("selected"));
     });
   }, [currentPlayer]);
 

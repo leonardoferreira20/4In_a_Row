@@ -290,9 +290,9 @@ const Grid = (props) => {
         handleComputerMove();
       }, 1500);
 
-      return clearTimeout(timeoutId);
+      return () => clearTimeout(timeoutId);
     }
-  }, [currentPlayer, isGameStarted]);
+  }, [currentPlayer, isGameStarted, grid]);
 
   useEffect(() => {
     const specialIndices = [];

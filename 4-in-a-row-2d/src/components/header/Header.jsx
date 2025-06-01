@@ -5,7 +5,7 @@ import audioSrc from "../../assets/Nintendo World Cup GB music Match 3.mp3";
 const Header = (props) => {
   const { game, infoVisible, infoVisibility, gameVisibility, resetGame } = props;
 
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const handleResetGameToStart = () => {
     resetGame();
@@ -49,7 +49,7 @@ const Header = (props) => {
       </div>
 
       <div className="sound-container">
-        <audio id="background-audio" src={audioSrc} autoPlay loop />
+        <audio id="background-audio" src={audioSrc} loop />
         <button className={isPlaying ? "btn-sound playing" : "btn-sound muted"} onClick={handlePlay}></button>
       </div>
     </div>
