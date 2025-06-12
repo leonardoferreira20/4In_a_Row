@@ -6,7 +6,7 @@ import Player from "../player/Player";
 import PlayerDashboard from "../player/player-dashboard/PlayerDashboard";
 import Grid from "../grid-panel/Grid";
 import FinishGame from "../finish-game/FinishGame";
-import Timer from "../timer/Timer.jsx";
+import Timer from "../Timer/Timer";
 
 const GamePanel = (props) => {
   const { updateGame, isGameVisible, gameVisibility, resetGame } = props;
